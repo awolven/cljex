@@ -6,7 +6,8 @@
   (:require [clj-time.coerce :as tc])
   (:require [clj-time.format :as tf])
   (:require [cheshire.core :refer :all :as json])
-  (:require [cheshire.generate :as jg]))
+  (:require [cheshire.generate :as jg])
+  (:require [clojure.java.io :as io]))
             
 
 (def database (atom '[]))
@@ -19,11 +20,11 @@
 (defn string->datetime [dob-string]
   (let [date-list (str/split dob-string #"[-/]")]
     (if (= (count date-list) 3)
-      (let [month (edn/read-string (nth date-list 0))
-            day (edn/read-string (nth date-list 1))
-            year (edn/read-string (nth date-list 2))]
+      (let [month (Integer/parseInt (nth date-list 0))
+            day (Integer/parseInt (nth date-list 1))
+            year (Integer/parseInt (nth date-list 2))]
         (t/date-time year month day))
-      (throw (Exception. (str/join (list "Invalid input (date) " dob-string)))))))
+      (throw (Exception. (str (list "Invalid input (date) " dob-string)))))))
 
 (def custom-formatter (tf/formatter "MM/dd/yyyy"))
 
@@ -45,7 +46,7 @@
     (if (or (= "male" (str/lower-case string))
             (= "m" (str/lower-case string)))
       :male
-      (throw (Exception. (str/join (list "Invalid input (gender) " string)))))))
+      (throw (Exception. (str (list "Invalid input (gender) " string)))))))
 
 (defn record-list->hash-map [record-list]
   (hash-map :last-name (nth record-list 0)
@@ -63,13 +64,13 @@
             record-list (map str/trim split-line)]
         (if (= (count record-list) 5)
           (record-list->hash-map record-list)
-          (throw (Exception. (str/join (list "Invalid input (record) " line))))))
+          (throw (Exception. (str (list "Invalid input (record) " line))))))
       (if (str/includes? line " ")
         (let [record-list (str/split line #"\s+")]
           (if (= (count record-list) 5)
             (record-list->hash-map record-list)
-            (throw (Exception. (str/join (list "Invalid input (record) " line))))))
-        (throw (Exception. (str/join (list "Invalid input (record) " line))))))))
+            (throw (Exception. (str (list "Invalid input (record) " line))))))
+        (throw (Exception. (str (list "Invalid input (record) " line))))))))
 
 (defn import-record [record]
   (swap! database #(cons record %)))
@@ -99,4 +100,16 @@
 
 (defn write-name-json [writer] ;; descending
   (json/encode-stream (get-all-names-sorted-descending) writer))
+
+(defn import-test-data
+  "set can be \"pipe\", \"comma\" or \"space\""
+  [set]
+  (with-open [in (io/reader (str "test/cljex/test-data-" set "-sep.txt"))]
+    (loop [count 0]
+      (let [line (.readLine in)]
+        (if (= line nil)
+          count
+          (let [record (parse-line line)]
+            (import-record record)
+            (recur (inc count))))))))
 
