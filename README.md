@@ -13,12 +13,12 @@ An example clojure program.
 
 Example usage:
 
-    $ java -jar target/uberjar/cljex-0.1.0-SNAPSHOT-standale.jar -i
+    $ java -jar target/uberjar/cljex-0.1.0-SNAPSHOT-standalone.jar -i
     test/cljex/test-data-space-sep.txt -i
     test/cljex/test-data-comma-sep.txt -i
     test/cljex/test-data-pipe-sep.txt --port 9000 --list name
 
-	$ java -jar target/uberjar/cljex-0.1.0-SNAPSHOT-standale.jar --help
+	$ java -jar target/uberjar/cljex-0.1.0-SNAPSHOT-standalone.jar --help
 
 ## Options
 
