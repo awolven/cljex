@@ -209,7 +209,7 @@
                     (reset! list (rest @list)))))))
           (recur))))))
 
-                      
+(defonce server (atom nil))                      
 
 (defn -main
   "I don't do a whole lot ... yet."
@@ -227,4 +227,9 @@
       (if (get @cmd-line-args :port)
         (let []
           (println "starting server on port" (get @cmd-line-args :port))    
-          (hk/run-server (compojure.handler/site #'all-routes) {:port (get @cmd-line-args :port)}))))))
+          (reset! server (hk/run-server (compojure.handler/site #'all-routes) {:port (get @cmd-line-args :port)})))))))
+
+(defn stop-server []
+  (when-not (nil? @server)
+    (@server :timeout 100)
+    (reset! server nil)))
