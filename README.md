@@ -22,12 +22,12 @@ Example usage:
 
 ## Options
 
-	[-h | --help]     get help on command
-	[-l <TYPE> | --list <TYPE>]     type is one of "gender",
+	[ -h | --help ]                   get help on command
+	[ -l <TYPE> | --list <TYPE> ]     type is one of "gender",
 	"birthdate", or "name"
-	[-p <PORT> | --port <PORT> ]     must be specified to start REST
+	[ -p <PORT> | --port <PORT> ]     must be specified to start REST
 	HTTP interface
-	[-i <PATH> | --input <PATH>]     pathname to input file
+	[ -i <PATH> | --input <PATH>]     pathname to input file
 
 ## Examples
 
